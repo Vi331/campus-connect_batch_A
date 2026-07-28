@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Saree Elegance — India's most luxurious online saree boutique. Shop handwoven Banarasi, Kanjeevaram, and Silk sarees with free shipping above ₹2000.">
+  <meta name="keywords" content="saree, silk saree, banarasi, kanjeevaram, online saree shop, Indian ethnic wear">
+  <meta property="og:title" content="Saree Elegance — Luxury Indian Sarees">
+  <meta property="og:description" content="Discover handcrafted sarees from India's finest weavers.">
+  <title>Saree Elegance — Luxury Indian Sarees | Home</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    /* ── Page-specific styles ── */
+
+    /* Search Overlay */
+    .search-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 6, 8, 0.92);
+      backdrop-filter: blur(16px);
+      z-index: var(--z-modal);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-20) var(--space-6) var(--space-6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .search-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .search-overlay-inner {
+      width: 100%;
+      max-width: 640px;
+    }
+    .search-input-wrap {
+      position: relative;
+      margin-bottom: var(--space-4);
+    }
+    #searchInput {
+      width: 100%;
+      padding: 1.1rem 3rem 1.1rem 1.5rem;
+      background: rgba(255, 253, 248, 0.08);
+      border: 1.5px solid rgba(201, 150, 44, 0.5);
+      border-radius: var(--radius-full);
+      color: white;
+      font-size: 1.1rem;
+      font-family: var(--font-body);
+      transition: var(--transition-fast);
+    }
+    #searchInput::placeholder { color: rgba(245,230,200,0.4); }
+    #searchInput:focus { border-color: var(--color-gold); outline: none; }
+    .search-close-btn {
+      position: absolute;
+      right: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,253,248,0.6);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    #searchResults { margin-top: var(--space-4); }
+    .search-result-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+      background: rgba(255,253,248,0.06);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-2);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      border: 1px solid transparent;
+    }
+    .search-result-item:hover { background: rgba(201,150,44,0.1); border-color: rgba(201,150,44,0.3); }
+    .search-result-item img {
+      width: 48px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); flex-shrink: 0;
+    }
+    .search-result-info { flex: 1; }
+    .search-result-name { color: white; font-weight: 600; font-size: 0.9rem; }
+    .search-result-cat  { color: rgba(201,150,44,0.8); font-size: 0.75rem; margin-top: 2px; }
+    .search-result-price { color: var(--color-gold-light); font-family: var(--font-display); font-weight: 700; }
+    .search-no-results  { color: rgba(245,230,200,0.5); text-align: center; padding: var(--space-8); }
+
+    /* Collections Section */
+    .collections-scroll {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-5);
+    }
+
+    /* Featured Banner */
+    .featured-banner {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      min-height: 500px;
+      display: flex;
+      align-items: flex-end;
+    }
+    .featured-banner img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .featured-banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(13,6,8,0.85) 0%, rgba(13,6,8,0.3) 60%, transparent 100%);
+    }
+    .featured-banner-content {
+      position: relative;
+      z-index: 1;
+      padding: var(--space-12);
+      max-width: 500px;
+    }
+
+    /* Products grid */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-5);
+    }
+
+    /* Benefits strip */
+    .benefits-strip {
+      background: var(--color-white);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      padding: var(--space-8) 0;
+    }
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-6);
+    }
+    .benefit-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--space-3);
+    }
+    .benefit-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, rgba(139,26,43,0.08), rgba(201,150,44,0.12));
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-crimson);
+      transition: var(--transition-base);
+    }
+    .benefit-item:hover .benefit-icon {
+      background: var(--color-crimson);
+      color: white;
+      border-color: var(--color-crimson);
+      transform: scale(1.1);
+    }
+    .benefit-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--color-dark);
+    }
+    .benefit-desc {
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    /* Testimonials */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+    }
+
+    /* Hero Decorative elements */
+    .hero-decorative {
+      position: absolute;
+      right: 8%;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      opacity: 0;
+      animation: heroEntrance 1.2s ease 1.1s forwards;
+    }
+
+    .hero-mini-card {
+      background: rgba(255,253,248,0.08);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(201,150,44,0.3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .hero-mini-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      background: rgba(201,150,44,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-gold);
+      flex-shrink: 0;
+    }
+
+    .hero-mini-label {
+      font-size: 0.7rem;
+      color: rgba(245,230,200,0.6);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-mini-value {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-white);
+    }
+
+    @media (max-width: 1100px) {
+      .collections-scroll { grid-template-columns: repeat(2, 1fr); }
+      .products-grid       { grid-template-columns: repeat(3, 1fr); }
+      .testimonials-grid   { grid-template-columns: repeat(2, 1fr); }
+      .benefits-grid       { grid-template-columns: repeat(2, 1fr); }
+      .hero-decorative     { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .products-grid     { grid-template-columns: repeat(2, 1fr); }
+      .collections-scroll { grid-template-columns: repeat(2, 1fr); }
+      .testimonials-grid  { grid-template-columns: 1fr; }
+      .benefits-grid      { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .products-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ ANNOUNCEMENT BAR ═══════════════════════════════ -->
+<div class="announcement-bar">
+  <p>🌸 <strong>MONSOON SALE</strong> — Up to 40% off on select Silk Sarees &nbsp;|&nbsp; Free Shipping above ₹2,000 &nbsp;|&nbsp; 🇮🇳 Authentic Handwoven</p>
+</div>
+
+<!-- ═══ NAVIGATION ══════════════════════════════════════ -->
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+  <div class="container">
+    <div class="navbar-inner">
+
+      <!-- Logo -->
+      <a href="index.html" class="navbar-logo" aria-label="Saree Elegance Home">
+        <span class="logo-main">Saree Elegance</span>
+        <span class="logo-sub">Handwoven Heritage</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <ul class="navbar-nav" role="list">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="shop.html" class="nav-link">Shop</a></li>
+        <li><a href="shop.html?cat=banarasi" class="nav-link">Banarasi</a></li>
+        <li><a href="shop.html?cat=silk" class="nav-link">Silk</a></li>
+        <li><a href="shop.html?cat=new" class="nav-link">New Arrivals</a></li>
+      </ul>
+
+      <!-- Actions -->
+      <div class="navbar-actions">
+        <button class="nav-action-btn" id="searchBtn" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <a href="cart.html" class="nav-action-btn" aria-label="Shopping cart" style="position:relative">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          <span class="nav-badge cart-count" style="display:none">0</span>
+        </a>
+        <div class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Nav Overlay -->
+<div class="mobile-nav-overlay"></div>
+
+<!-- Mobile Nav Drawer -->
+<div class="mobile-nav" role="dialog" aria-label="Mobile navigation">
+  <button class="mobile-nav-close" style="position:absolute;top:1.5rem;right:1.5rem;color:rgba(245,230,200,0.7);font-size:1.8rem;background:none;border:none;cursor:pointer;">&times;</button>
+  <div style="margin-bottom:2rem">
+    <span style="font-family:var(--font-display);font-size:1.25rem;color:white;display:block">Saree Elegance</span>
+    <span style="font-family:var(--font-elegant);font-style:italic;font-size:0.75rem;color:var(--color-gold);letter-spacing:0.15em">Handwoven Heritage</span>
+  </div>
+  <ul style="display:flex;flex-direction:column;gap:1.5rem">
+    <li><a href="index.html" style="color:rgba(245,230,200,0.85);font-size:1.1rem;font-family:var(--font-display)">Home</a></li>
+    <li><a href="shop.html" style="color:rgba(245,230,200,0.85);font-size:1.1rem;font-family:var(--font-display)">Shop All</a></li>
+    <li><a href="shop.html?cat=banarasi" style="color:rgba(245,230,200,0.85);font-size:1.1rem;font-family:var(--font-display)">Banarasi</a></li>
+    <li><a href="shop.html?cat=silk" style="color:rgba(245,230,200,0.85);font-size:1.1rem;font-family:var(--font-display)">Silk Sarees</a></li>
+    <li><a href="shop.html?cat=new" style="color:rgba(245,230,200,0.85);font-size:1.1rem;font-family:var(--font-display)">New Arrivals</a></li>
+    <li><a href="cart.html" style="color:var(--color-gold);font-size:1.1rem;font-family:var(--font-display)">🛒 Cart</a></li>
+  </ul>
+</div>
+
+<!-- ═══ SEARCH OVERLAY ══════════════════════════════════ -->
+<div class="search-overlay" id="searchOverlay" role="dialog" aria-label="Search">
+  <div class="search-overlay-inner">
+    <p style="color:rgba(245,230,200,0.5);font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;text-align:center;margin-bottom:1.5rem">Search our saree collection</p>
+    <div class="search-input-wrap">
+      <input type="text" id="searchInput" placeholder="Search sarees, fabrics, occasions..." autocomplete="off">
+      <button class="search-close-btn" id="searchClose" aria-label="Close search">&times;</button>
+    </div>
+    <div id="searchResults"></div>
+  </div>
+</div>
+
+<!-- ═══ HERO SECTION ════════════════════════════════════ -->
+<section class="hero" aria-label="Hero Banner">
+
+  <!-- Background -->
+  <div class="hero-bg">
+    <img src="images/hero_saree_1.jpg" alt="Luxury saree hero" id="heroBg">
+    <div class="hero-bg-overlay"></div>
+  </div>
+
+  <!-- Decorative particles -->
+  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden">
+    <div style="position:absolute;top:20%;left:15%;width:3px;height:3px;background:var(--color-gold);border-radius:50%;opacity:0.4;animation:float 4s ease-in-out infinite"></div>
+    <div style="position:absolute;top:60%;left:25%;width:2px;height:2px;background:var(--color-gold-light);border-radius:50%;opacity:0.3;animation:float 6s ease-in-out 1s infinite"></div>
+    <div style="position:absolute;top:35%;right:30%;width:4px;height:4px;background:var(--color-gold-pale);border-radius:50%;opacity:0.25;animation:float 5s ease-in-out 2s infinite"></div>
+  </div>
+
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-label hero-animate-1">
+        ✦ New Collection 2026
+      </div>
+      <h1 class="hero-animate-2">
+        Drape Yourself in <em>Timeless</em> Elegance
+      </h1>
+      <p class="hero-desc hero-animate-3">
+        Discover our handpicked collection of authentic handwoven sarees — 
+        from the golden looms of Banaras to the silk temples of Kanchipuram.
+      </p>
+      <div class="hero-cta hero-animate-4">
+        <a href="shop.html" class="btn btn-primary btn-lg btn-ripple">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          Shop Collection
+        </a>
+        <a href="shop.html?cat=new" class="btn btn-outline btn-lg">
+          New Arrivals →
+        </a>
+      </div>
+    </div>
+
+    <!-- Floating stat cards -->
+    <div class="hero-decorative">
+      <div class="hero-mini-card float-1">
+        <div class="hero-mini-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div>
+          <div class="hero-mini-label">Total Sarees</div>
+          <div class="hero-mini-value">5,000+</div>
+        </div>
+      </div>
+      <div class="hero-mini-card float-2">
+        <div class="hero-mini-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <div>
+          <div class="hero-mini-label">Happy Customers</div>
+          <div class="hero-mini-value">50,000+</div>
+        </div>
+      </div>
+      <div class="hero-mini-card float-3">
+        <div class="hero-mini-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <div>
+          <div class="hero-mini-label">Avg. Rating</div>
+          <div class="hero-mini-value">4.8 ★</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="hero-scroll" aria-hidden="true">
+    <div class="scroll-indicator">
+      <div class="scroll-dot"></div>
+    </div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ═══ MARQUEE ══════════════════════════════════════════ -->
+<div class="marquee-section" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="marquee-dot"></span> Banarasi Silk</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Kanjeevaram</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Paithani</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Chanderi</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Pure Georgette</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Mysore Silk</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Organza</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Kota Doria</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Patola</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Tant Cotton</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Linen Sarees</span>
+    <span class="marquee-item"><span class="marquee-dot"></span> Tussar Silk</span>
+  </div>
+</div>
+
+<!-- ═══ BENEFITS STRIP ══════════════════════════════════ -->
+<section class="benefits-strip">
+  <div class="container">
+    <div class="benefits-grid">
+      <div class="benefit-item reveal">
+        <div class="benefit-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+        </div>
+        <div class="benefit-title">Free Shipping</div>
+        <div class="benefit-desc">On orders above ₹2,000 across India</div>
+      </div>
+      <div class="benefit-item reveal delay-2">
+        <div class="benefit-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <div class="benefit-title">100% Authentic</div>
+        <div class="benefit-desc">Certified handwoven sarees from master weavers</div>
+      </div>
+      <div class="benefit-item reveal delay-3">
+        <div class="benefit-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </div>
+        <div class="benefit-title">Easy Returns</div>
+        <div class="benefit-desc">7-day hassle-free return policy</div>
+      </div>
+      <div class="benefit-item reveal delay-4">
+        <div class="benefit-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </div>
+        <div class="benefit-title">24/7 Support</div>
+        <div class="benefit-desc">Expert styling help whenever you need it</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COLLECTIONS ══════════════════════════════════════ -->
+<section class="section" aria-label="Shop by Collection">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label reveal">Collections</div>
+      <h2 class="reveal delay-2">Shop by Weave</h2>
+      <p class="reveal delay-3">Explore India's most treasured saree traditions, each woven with centuries of artisan mastery.</p>
+    </div>
+
+    <div class="collections-scroll">
+      <!-- Banarasi -->
+      <div class="category-card reveal" onclick="window.location.href='shop.html?cat=banarasi'">
+        <div class="category-card-bg">
+          <img src="images/saree_maroon.jpg" alt="Banarasi Silk Collection">
+          <div class="category-card-gradient"></div>
+        </div>
+        <div class="category-card-body">
+          <div class="category-card-tag">Premium</div>
+          <div class="category-card-title">Banarasi Silk</div>
+          <div class="category-card-count">142 Sarees</div>
+          <div class="category-card-cta">
+            Shop Now →
+          </div>
+        </div>
+      </div>
+
+      <!-- Kanjeevaram -->
+      <div class="category-card reveal delay-2" onclick="window.location.href='shop.html?cat=kanjeevaram'">
+        <div class="category-card-bg">
+          <img src="images/saree_blue.jpg" alt="Kanjeevaram Collection">
+          <div class="category-card-gradient"></div>
+        </div>
+        <div class="category-card-body">
+          <div class="category-card-tag">Classic</div>
+          <div class="category-card-title">Kanjeevaram</div>
+          <div class="category-card-count">89 Sarees</div>
+          <div class="category-card-cta">Shop Now →</div>
+        </div>
+      </div>
+
+      <!-- Georgette -->
+      <div class="category-card reveal delay-3" onclick="window.location.href='shop.html?cat=georgette'">
+        <div class="category-card-bg">
+          <img src="images/hero_saree_1.jpg" alt="Georgette Collection">
+          <div class="category-card-gradient"></div>
+        </div>
+        <div class="category-card-body">
+          <div class="category-card-tag">Contemporary</div>
+          <div class="category-card-title">Georgette</div>
+          <div class="category-card-count">215 Sarees</div>
+          <div class="category-card-cta">Shop Now →</div>
+        </div>
+      </div>
+
+      <!-- Chanderi -->
+      <div class="category-card reveal delay-4" onclick="window.location.href='shop.html?cat=chanderi'">
+        <div class="category-card-bg">
+          <img src="images/saree_maroon.jpg" alt="Chanderi Collection">
+          <div class="category-card-gradient" style="background: linear-gradient(to top, rgba(13,6,8,0.95) 0%, rgba(13,6,8,0.5) 50%, rgba(6,95,70,0.3) 100%)"></div>
+        </div>
+        <div class="category-card-body">
+          <div class="category-card-tag">Handloom</div>
+          <div class="category-card-title">Chanderi</div>
+          <div class="category-card-count">97 Sarees</div>
+          <div class="category-card-cta">Shop Now →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURED BANNER ══════════════════════════════════ -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="featured-banner reveal-scale">
+      <img src="images/hero_saree_1.jpg" alt="Bridal Collection Feature">
+      <div class="featured-banner-overlay"></div>
+      <div class="featured-banner-content">
+        <div class="section-label" style="margin-bottom:1rem">
+          <span style="width:30px;height:1px;background:var(--gradient-gold);display:inline-block"></span>
+          Bridal Season
+        </div>
+        <h2 style="color:white;font-size:clamp(2rem,4vw,3rem);margin-bottom:1rem">The Bride's Dream Collection</h2>
+        <p style="color:rgba(245,230,200,0.8);margin-bottom:2rem;line-height:1.7">
+          Curated exclusively for the modern Indian bride. Pure silk, intricate zari work, 
+          and timeless designs that will be cherished for generations.
+        </p>
+        <a href="shop.html?occasion=bridal" class="btn btn-primary btn-lg btn-ripple">
+          Explore Bridal →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TRENDING SAREES ═══════════════════════════════════ -->
+<section class="section" style="background:var(--color-light)" aria-label="Trending Products">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label reveal">Trending Now</div>
+      <h2 class="reveal delay-2">Most Loved Sarees</h2>
+      <p class="reveal delay-3">Our customers' most-wished-for pieces, now available for your wardrobe.</p>
+    </div>
+    <div class="products-grid" id="productsGrid">
+      <!-- Rendered by JS -->
+    </div>
+    <div style="text-align:center;margin-top:3rem" class="reveal">
+      <a href="shop.html" class="btn btn-dark btn-lg">View All Sarees →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS SECTION ════════════════════════════════════ -->
+<section class="stats-section" aria-label="Our Numbers">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-number" data-count="5000" data-suffix="+">0+</div>
+        <div class="stat-label">Sarees Available</div>
+      </div>
+      <div class="stat-item reveal delay-2">
+        <div class="stat-number" data-count="50000" data-suffix="+">0+</div>
+        <div class="stat-label">Happy Customers</div>
+      </div>
+      <div class="stat-item reveal delay-3">
+        <div class="stat-number" data-count="15" data-suffix="+">0+</div>
+        <div class="stat-label">Master Weavers</div>
+      </div>
+      <div class="stat-item reveal delay-4">
+        <div class="stat-number" data-count="8" data-suffix="">0</div>
+        <div class="stat-label">Years of Excellence</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ════════════════════════════════════ -->
+<section class="section" aria-label="Customer Reviews">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label reveal">Testimonials</div>
+      <h2 class="reveal delay-2">What Our Customers Say</h2>
+      <p class="reveal delay-3">Real stories from women who found their perfect drape with us.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        <p class="testimonial-text">
+          "The Banarasi saree I ordered was absolutely breathtaking. The zari work 
+          was even more intricate than in the photos. Wore it for my daughter's wedding 
+          and received compliments all evening!"
+        </p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">P</div>
+          <div>
+            <div class="testimonial-name">Padmavathi Rao</div>
+            <div class="testimonial-location">Hyderabad, Telangana</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal delay-2">
+        <div class="testimonial-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        <p class="testimonial-text">
+          "I was skeptical about buying a silk saree online, but Saree Elegance 
+          completely changed my mind. The quality is unmatched and the packaging 
+          was so luxurious, it felt like a gift to myself."
+        </p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">A</div>
+          <div>
+            <div class="testimonial-name">Ananya Krishnamurthy</div>
+            <div class="testimonial-location">Chennai, Tamil Nadu</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal delay-4">
+        <div class="testimonial-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        <p class="testimonial-text">
+          "Found the most gorgeous Kanjeevaram for my sister's bridal trousseau. 
+          The color was exact, delivery was on time, and the return process was 
+          completely painless. Will definitely shop again!"
+        </p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">S</div>
+          <div>
+            <div class="testimonial-name">Sunita Mehta</div>
+            <div class="testimonial-location">Mumbai, Maharashtra</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NEWSLETTER ═══════════════════════════════════════ -->
+<section class="newsletter-section" aria-label="Newsletter Signup">
+  <div class="container">
+    <div class="newsletter-inner">
+      <div class="section-label reveal" style="justify-content:center;color:rgba(201,150,44,0.8)">
+        <span style="width:30px;height:1px;background:rgba(201,150,44,0.5);display:inline-block"></span>
+        Exclusive Access
+        <span style="width:30px;height:1px;background:rgba(201,150,44,0.5);display:inline-block"></span>
+      </div>
+      <h2 class="reveal delay-2">Get First Access to New Arrivals</h2>
+      <p class="reveal delay-3">Subscribe and receive 10% off your first order, plus early access to our exclusive collections and weaver stories.</p>
+      <form class="newsletter-form reveal delay-4" id="newsletterForm" novalidate>
+        <input type="email" class="newsletter-input" placeholder="Your email address" required aria-label="Email address">
+        <button type="submit" class="btn btn-primary btn-ripple">
+          Subscribe
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══════════════════════════════════════════ -->
+<footer class="footer" aria-label="Site footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div class="footer-brand">
+        <span class="logo-main">Saree Elegance</span>
+        <span class="logo-sub">Handwoven Heritage</span>
+        <p>
+          Celebrating India's rich textile heritage by connecting discerning customers 
+          with master weavers across the country. Every saree tells a story.
+        </p>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          </a>
+          <a href="#" class="social-link" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          </a>
+          <a href="#" class="social-link" aria-label="Pinterest">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 12a4 4 0 1 1 8 0c0 4-4 7-4 7s-4-3-4-7z"></path><circle cx="12" cy="12" r="1"></circle></svg>
+          </a>
+          <a href="#" class="social-link" aria-label="YouTube">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"></path><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul class="footer-links">
+          <li><a href="shop.html" class="footer-link">All Sarees</a></li>
+          <li><a href="shop.html?cat=banarasi" class="footer-link">Banarasi Silk</a></li>
+          <li><a href="shop.html?cat=kanjeevaram" class="footer-link">Kanjeevaram</a></li>
+          <li><a href="shop.html?cat=georgette" class="footer-link">Georgette</a></li>
+          <li><a href="shop.html?occasion=bridal" class="footer-link">Bridal Collection</a></li>
+          <li><a href="shop.html?cat=new" class="footer-link">New Arrivals</a></li>
+        </ul>
+      </div>
+
+      <!-- Help -->
+      <div class="footer-col">
+        <h4>Help</h4>
+        <ul class="footer-links">
+          <li><a href="#" class="footer-link">Size Guide</a></li>
+          <li><a href="#" class="footer-link">Saree Care</a></li>
+          <li><a href="#" class="footer-link">Draping Styles</a></li>
+          <li><a href="#" class="footer-link">Track My Order</a></li>
+          <li><a href="#" class="footer-link">Returns & Refunds</a></li>
+          <li><a href="#" class="footer-link">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul class="footer-links">
+          <li><span class="footer-link">📍 Varanasi, UP, India</span></li>
+          <li><a href="tel:+918001234567" class="footer-link">📞 +91 800 123 4567</a></li>
+          <li><a href="mailto:care@sareeelegance.in" class="footer-link">✉️ care@sareeelegance.in</a></li>
+          <li style="margin-top:1rem">
+            <span style="font-size:0.7rem;color:rgba(245,230,200,0.4);letter-spacing:0.1em;text-transform:uppercase">Mon–Sat: 9am–7pm IST</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+      <p>© 2026 Saree Elegance. All rights reserved. Crafted with ♥ for Indian textiles.</p>
+      <div class="payment-badges">
+        <div class="pay-badge">UPI</div>
+        <div class="pay-badge">Visa</div>
+        <div class="pay-badge">MC</div>
+        <div class="pay-badge">RuPay</div>
+        <div class="pay-badge">EMI</div>
+        <div class="pay-badge">COD</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<!-- Scripts -->
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // Render products on homepage
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      const grid = document.getElementById('productsGrid');
+      if (grid && window.PRODUCTS && window.cart) {
+        grid.innerHTML = window.PRODUCTS.slice(0, 8).map(p =>
+          window.renderProductCard(p, window.cart)
+        ).join('');
+        // trigger reveal for dynamically added cards
+        setTimeout(() => {
+          grid.querySelectorAll('.reveal').forEach((el, i) => {
+            setTimeout(() => el.classList.add('visible'), i * 60);
+          });
+        }, 100);
+      }
+    }, 50);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your shopping cart at Saree Elegance. Review your selected sarees and proceed to checkout.">
+  <title>Shopping Cart — Saree Elegance</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .cart-section-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-crimson-dark);
+      margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .empty-cart {
+      text-align: center;
+      padding: var(--space-24) var(--space-8);
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      border: 1px dashed var(--color-border);
+    }
+
+    .empty-cart-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, rgba(139,26,43,0.08), rgba(201,150,44,0.12));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-6);
+      color: var(--color-crimson);
+    }
+
+    .empty-cart h3 {
+      font-family: var(--font-display);
+      color: var(--color-dark);
+      margin-bottom: var(--space-3);
+    }
+
+    .empty-cart p {
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-8);
+    }
+
+    /* Shipping Progress */
+    .shipping-progress {
+      background: linear-gradient(135deg, rgba(22,163,74,0.06), rgba(22,163,74,0.02));
+      border: 1px solid rgba(22,163,74,0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-5);
+      margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .shipping-progress-icon { color: #16a34a; }
+    .shipping-progress-text {
+      font-size: 0.875rem;
+      color: var(--color-dark);
+    }
+    .shipping-progress-text strong { color: #16a34a; }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 4px;
+      background: rgba(22,163,74,0.15);
+      border-radius: var(--radius-full);
+      margin-top: var(--space-2);
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #16a34a;
+      border-radius: var(--radius-full);
+      transition: width 0.6s ease;
+    }
+
+    @media (max-width: 992px) {
+      .cart-layout { grid-template-columns: 1fr; }
+      .order-summary { position: relative; top: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Announcement Bar -->
+<div class="announcement-bar">
+  <p>🌸 <strong>MONSOON SALE</strong> — Up to 40% off | Free Shipping above ₹2,000</p>
+</div>
+
+<!-- Navigation -->
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">
+        <span class="logo-main">Saree Elegance</span>
+        <span class="logo-sub">Handwoven Heritage</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="shop.html" class="nav-link">Shop</a></li>
+        <li><a href="shop.html?cat=banarasi" class="nav-link">Banarasi</a></li>
+        <li><a href="shop.html?cat=silk" class="nav-link">Silk</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <a href="cart.html" class="nav-action-btn" style="position:relative">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          <span class="nav-badge cart-count" style="display:none">0</span>
+        </a>
+        <div class="hamburger"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav-overlay"></div>
+<div class="mobile-nav">
+  <button class="mobile-nav-close" style="position:absolute;top:1.5rem;right:1.5rem;color:rgba(245,230,200,0.7);font-size:1.8rem;background:none;border:none;cursor:pointer;">&times;</button>
+  <div style="margin-bottom:2rem"><span style="font-family:var(--font-display);font-size:1.25rem;color:white">Saree Elegance</span></div>
+  <ul style="display:flex;flex-direction:column;gap:1.5rem">
+    <li><a href="index.html" style="color:rgba(245,230,200,0.85);font-size:1.1rem;font-family:var(--font-display)">Home</a></li>
+    <li><a href="shop.html" style="color:rgba(245,230,200,0.85);font-size:1.1rem;font-family:var(--font-display)">Shop All</a></li>
+  </ul>
+</div>
+
+<!-- Page Header -->
+<div class="page-header">
+  <div class="container">
+    <div class="page-header-inner">
+      <div class="section-label" style="justify-content:center;margin-bottom:0.75rem;color:rgba(201,150,44,0.8)">Your Selection</div>
+      <h1>Shopping Cart</h1>
+      <p>Review your chosen sarees before checkout</p>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Main -->
+<main style="padding:var(--space-12) 0 var(--space-20)" class="page-transition">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb" style="margin-bottom:2rem">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>Shopping Cart</span>
+    </div>
+
+    <div class="cart-layout">
+      <!-- Cart Items Column -->
+      <div>
+        <div class="cart-section-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          Your Cart (<span id="cartItemCount">0</span> items)
+        </div>
+
+        <!-- Shipping Progress -->
+        <div class="shipping-progress" id="shippingProgress">
+          <div class="shipping-progress-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          </div>
+          <div style="flex:1">
+            <div class="shipping-progress-text" id="shippingText">Loading...</div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="shippingBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cart Items Container -->
+        <div id="cartItemsContainer">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Continue Shopping -->
+        <a href="shop.html" class="btn btn-outline" style="margin-top:1.5rem;border-color:var(--color-border);color:var(--color-text-muted)">
+          ← Continue Shopping
+        </a>
+      </div>
+
+      <!-- Order Summary Column -->
+      <div class="order-summary">
+        <h3>Order Summary</h3>
+
+        <!-- Coupon Code -->
+        <div class="coupon-form">
+          <input type="text" class="coupon-input" placeholder="Enter coupon code" id="couponInput">
+          <button class="btn btn-dark btn-sm" onclick="applyCoupon()">Apply</button>
+        </div>
+
+        <!-- Price Breakdown -->
+        <div class="summary-row">
+          <span>Subtotal (<span id="summaryCount">0</span> items)</span>
+          <span id="summarySubtotal">₹0</span>
+        </div>
+        <div class="summary-row" id="discountRow" style="display:none">
+          <span style="color:#16a34a">Coupon Discount</span>
+          <span style="color:#16a34a" id="discountAmount">-₹0</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span id="summaryShipping" style="color:#16a34a">₹149</span>
+        </div>
+        <div class="summary-row">
+          <span>GST (5%)</span>
+          <span id="summaryTax">₹0</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span class="summary-price" id="summaryTotal">₹0</span>
+        </div>
+
+        <button class="btn btn-primary btn-lg w-full mt-8 btn-ripple" id="checkoutBtn" onclick="window.location.href='checkout.html'" style="margin-top:1.5rem">
+          Proceed to Checkout →
+        </button>
+
+        <!-- Secure badges -->
+        <div style="display:flex;justify-content:center;gap:0.75rem;margin-top:1rem;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:0.25rem;font-size:0.7rem;color:var(--color-text-muted)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Secure Checkout
+          </div>
+          <div style="display:flex;align-items:center;gap:0.25rem;font-size:0.7rem;color:var(--color-text-muted)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            SSL Encrypted
+          </div>
+        </div>
+
+        <!-- Payment Icons -->
+        <div style="display:flex;justify-content:center;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap">
+          <div class="pay-badge" style="background:rgba(139,26,43,0.05);border-color:rgba(139,26,43,0.15);color:var(--color-text-muted)">UPI</div>
+          <div class="pay-badge" style="background:rgba(139,26,43,0.05);border-color:rgba(139,26,43,0.15);color:var(--color-text-muted)">Visa</div>
+          <div class="pay-badge" style="background:rgba(139,26,43,0.05);border-color:rgba(139,26,43,0.15);color:var(--color-text-muted)">MC</div>
+          <div class="pay-badge" style="background:rgba(139,26,43,0.05);border-color:rgba(139,26,43,0.15);color:var(--color-text-muted)">RuPay</div>
+          <div class="pay-badge" style="background:rgba(139,26,43,0.05);border-color:rgba(139,26,43,0.15);color:var(--color-text-muted)">COD</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommended Section -->
+    <div style="margin-top:var(--space-16)">
+      <div class="section-header">
+        <div class="section-label reveal">You Might Like</div>
+        <h2 class="reveal delay-2">Add to Your Collection</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-5)" id="recommendedGrid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    renderCart();
+    renderRecommended();
+    window.cart?.subscribe(() => renderCart());
+  }, 60);
+});
+
+function renderCart() {
+  const cart = window.cart;
+  if (!cart) return;
+
+  const items = cart.getFullItems();
+  const container = document.getElementById('cartItemsContainer');
+  const countEl  = document.getElementById('cartItemCount');
+  const subtotalEl = document.getElementById('summarySubtotal');
+  const shippingEl = document.getElementById('summaryShipping');
+  const taxEl = document.getElementById('summaryTax');
+  const totalEl = document.getElementById('summaryTotal');
+  const summaryCountEl = document.getElementById('summaryCount');
+
+  if (countEl) countEl.textContent = items.length;
+  if (summaryCountEl) summaryCountEl.textContent = cart.getCount();
+
+  // Price updates
+  const subtotal = cart.getSubtotal();
+  const shipping = cart.getShipping();
+  const tax = cart.getTax();
+  const total = cart.getTotal();
+
+  if (subtotalEl) subtotalEl.textContent = formatINR(subtotal);
+  if (shippingEl) shippingEl.textContent = shipping === 0 ? 'FREE' : formatINR(shipping);
+  if (taxEl) taxEl.textContent = formatINR(tax);
+  if (totalEl) totalEl.textContent = formatINR(total);
+
+  // Shipping Progress
+  const FREE_THRESHOLD = 2000;
+  const progress = Math.min((subtotal / FREE_THRESHOLD) * 100, 100);
+  const shippingBar = document.getElementById('shippingBar');
+  const shippingText = document.getElementById('shippingText');
+  if (shippingBar) shippingBar.style.width = progress + '%';
+  if (shippingText) {
+    if (subtotal >= FREE_THRESHOLD) {
+      shippingText.innerHTML = '<strong>🎉 You have free shipping!</strong>';
+    } else {
+      const remaining = FREE_THRESHOLD - subtotal;
+      shippingText.innerHTML = `Add <strong>${formatINR(remaining)}</strong> more for <strong>FREE shipping</strong>`;
+    }
+  }
+
+  if (!container) return;
+
+  if (items.length === 0) {
+    container.innerHTML = `
+      <div class="empty-cart">
+        <div class="empty-cart-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        </div>
+        <h3>Your cart is empty</h3>
+        <p>Discover our beautiful collection of handwoven sarees</p>
+        <a href="shop.html" class="btn btn-primary btn-lg btn-ripple">Start Shopping →</a>
+      </div>
+    `;
+    document.getElementById('checkoutBtn')?.setAttribute('disabled', 'true');
+    return;
+  }
+
+  container.innerHTML = items.map(item => `
+    <div class="cart-item reveal" id="cartItem-${item.id}">
+      <div class="cart-item-img">
+        <img src="${item.image}" alt="${item.name}"
+             onerror="this.style.background='linear-gradient(135deg,#8B1A2B,#C9962C)'">
+      </div>
+      <div class="cart-item-body">
+        <div class="cart-item-category">${item.category}</div>
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-meta">Fabric: ${item.fabric} · Colour: ${item.colorName}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem">
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty('${item.id}', -1)">−</button>
+            <span class="qty-display" id="qty-${item.id}">${item.quantity}</span>
+            <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
+          </div>
+          <div class="cart-item-price">${formatINR(item.price * item.quantity)}</div>
+        </div>
+      </div>
+      <button class="cart-remove" onclick="removeItem('${item.id}')" title="Remove item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+      </button>
+    </div>
+  `).join('');
+
+  setTimeout(() => container.querySelectorAll('.reveal').forEach(el => el.classList.add('visible')), 50);
+}
+
+function changeQty(productId, delta) {
+  if (!window.cart) return;
+  const item = window.cart.items.find(i => i.id === productId);
+  if (item) window.cart.updateQty(productId, item.quantity + delta);
+  renderCart();
+}
+
+function removeItem(productId) {
+  const el = document.getElementById(`cartItem-${productId}`);
+  if (el) {
+    el.style.transform = 'translateX(100%)';
+    el.style.opacity = '0';
+    el.style.transition = '0.35s ease';
+    setTimeout(() => { window.cart?.remove(productId); renderCart(); }, 350);
+  } else {
+    window.cart?.remove(productId);
+    renderCart();
+  }
+}
+
+function applyCoupon() {
+  const code = document.getElementById('couponInput')?.value.trim().toUpperCase();
+  const validCoupons = { 'FIRST10': 10, 'SILK15': 15, 'WELCOME': 12 };
+  if (validCoupons[code]) {
+    const pct = validCoupons[code];
+    const sub = window.cart?.getSubtotal() || 0;
+    const disc = Math.round(sub * pct / 100);
+    document.getElementById('discountRow').style.display = 'flex';
+    document.getElementById('discountAmount').textContent = `-${formatINR(disc)}`;
+    showToast(`Coupon applied! ${pct}% off`, 'success');
+  } else {
+    showToast('Invalid coupon code', 'error');
+  }
+}
+
+function renderRecommended() {
+  const grid = document.getElementById('recommendedGrid');
+  if (!grid || !window.PRODUCTS || !window.cart) return;
+  const cartIds = window.cart.items.map(i => i.id);
+  const products = window.PRODUCTS.filter(p => !cartIds.includes(p.id)).slice(0, 4);
+  grid.innerHTML = products.map(p => window.renderProductCard(p, window.cart)).join('');
+  setTimeout(() => grid.querySelectorAll('.reveal').forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), i * 80);
+  }), 100);
+}
+
+function formatINR(amount) {
+  return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
+}
+</script>
+</body>
+</html>
